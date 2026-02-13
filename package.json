@@ -8,7 +8,8 @@
         "build": "bun run scripts/build.ts",
 		"release:minor": "./scripts/release.sh minor",
 		"release:patch": "./scripts/release.sh patch",
-		"release:major": "./scripts/release.sh major"
+		"release:major": "./scripts/release.sh major",
+		"release:tag": "./scripts/release.sh --tag"
     },
     "dependencies": {
         "@tiptap/core": "^3.19.0",
