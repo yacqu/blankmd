@@ -6,10 +6,9 @@
     "scripts": {
         "dev": "bun run scripts/dev.ts",
         "build": "bun run scripts/build.ts",
-		"release:minor": "./scripts/release.sh minor",
 		"release:patch": "./scripts/release.sh patch",
-		"release:major": "./scripts/release.sh major",
-		"release:tag": "./scripts/release.sh --tag"
+		"release:minor": "./scripts/release.sh minor",
+		"release:major": "./scripts/release.sh major"
     },
     "dependencies": {
         "@tiptap/core": "^3.19.0",
