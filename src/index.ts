@@ -7,7 +7,7 @@
 
 import "./styles.css";
 import { createEditor } from "./core";
-import { initToolbar, initSettings } from "./ui";
+import { initToolbar, initSettings, initQuickActions } from "./ui";
 
 /**
  * Initialize the blankmd editor
@@ -25,6 +25,7 @@ async function init(): Promise<void> {
 			// Initialize UI components after editor is ready
 			initToolbar(editor);
 			initSettings(editor);
+			initQuickActions(editor);
 		},
 	});
 }

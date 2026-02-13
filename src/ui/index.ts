@@ -9,6 +9,8 @@ export type { ToolbarOptions } from "./toolbar";
 export { initSettings, applySettings, isDarkMode, prefersDarkMode } from "./settings";
 export type { SettingsOptions } from "./settings";
 
+export { initQuickActions } from "./quick-actions";
+
 export { icons, textIcons } from "./icons";
 
 export {

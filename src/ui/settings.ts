@@ -236,7 +236,7 @@ function createTypographySection(
 			"Size",
 			createStepper({
 				value: settings.fontSize,
-				min: mobile ? 8 : 14,
+				min: 2,
 				max: 24,
 				step: 1,
 				format: (v) => `${v}px`,
