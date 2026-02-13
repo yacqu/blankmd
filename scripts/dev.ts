@@ -13,7 +13,7 @@ import chalk from "chalk";
 const PORT = 1999;
 const ROOT_DIR = path.join(import.meta.dirname, "..");
 const SRC_DIR = path.join(ROOT_DIR, "src");
-const ENTRY = path.join(SRC_DIR, "editor.ts");
+const ENTRY = path.join(SRC_DIR, "index.ts");
 const CSS_PATH = path.join(SRC_DIR, "styles.css");
 
 

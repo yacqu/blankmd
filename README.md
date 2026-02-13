@@ -72,16 +72,63 @@ bun run build --output ~/Desktop/my-editor.html
 ```
 blankmd/
 ├── src/
-│   ├── editor.ts      # Main editor initialization
-│   ├── settings.ts    # Settings panel UI
-│   ├── toolbar.ts     # Toolbar UI
-│   └── styles.css     # All styles
+│   ├── index.ts           # Main entry point
+│   ├── types.ts           # TypeScript interfaces
+│   ├── styles.css         # All styles
+│   ├── config/
+│   │   ├── index.ts       # Config exports
+│   │   ├── defaults.ts    # Default settings & constants
+│   │   └── themes.ts      # Light/dark theme tokens
+│   ├── core/
+│   │   ├── index.ts       # Core exports
+│   │   ├── editor.ts      # Editor setup & lifecycle
+│   │   ├── extensions.ts  # Custom Tiptap extensions
+│   │   └── storage.ts     # Storage abstraction
+│   └── ui/
+│       ├── index.ts       # UI exports
+│       ├── icons.ts       # SVG icon components
+│       ├── components.ts  # Reusable UI helpers
+│       ├── toolbar.ts     # Toolbar component
+│       └── settings.ts    # Settings panel
 ├── scripts/
-│   ├── build.ts       # Production build script
-│   └── dev.ts         # Development server
+│   ├── build.ts           # Production build
+│   └── dev.ts             # Dev server
 ├── dist/
-│   └── index.html     # Built output (gitignored)
+│   └── index.html         # Built output (gitignored)
 └── package.json
+```
+
+## Extending
+
+The codebase is designed to be easily extensible:
+
+### Custom Toolbar Buttons
+
+```typescript
+import { createToolbarItem, defaultToolbarItems } from "blankmd";
+
+const customButton = createToolbarItem({
+  id: "custom",
+  icon: "<svg>...</svg>",
+  title: "Custom Action",
+  action: (editor) => editor.chain().focus().insertContent("Hello!").run(),
+});
+
+// Add to toolbar
+initToolbar(editor, {
+  items: [...defaultToolbarItems, customButton],
+});
+```
+
+### Custom Themes
+
+```typescript
+import type { ThemeTokens } from "blankmd";
+
+const customTheme: ThemeTokens = {
+  bgEditor: "#1a1b26",
+  // ... other tokens
+};
 ```
 
 ## Tech Stack
