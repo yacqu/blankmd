@@ -1,0 +1,51 @@
+{
+    "name": "blankmd",
+    "version": "1.0.0",
+    "description": "A single-file Markdown editor. Build once, keep forever.",
+    "type": "module",
+    "scripts": {
+        "dev": "bun run scripts/dev.ts",
+        "build": "bun run scripts/build.ts"
+    },
+    "dependencies": {
+        "@tiptap/core": "^3.19.0",
+        "@tiptap/extension-code-block-lowlight": "^3.19.0",
+        "@tiptap/extension-link": "^3.19.0",
+        "@tiptap/extension-placeholder": "^3.19.0",
+        "@tiptap/extension-table": "^3.19.0",
+        "@tiptap/extension-table-cell": "^3.19.0",
+        "@tiptap/extension-table-header": "^3.19.0",
+        "@tiptap/extension-table-row": "^3.19.0",
+        "@tiptap/extension-task-item": "^3.19.0",
+        "@tiptap/extension-task-list": "^3.19.0",
+        "@tiptap/markdown": "^3.19.0",
+        "@tiptap/pm": "^3.19.0",
+        "@tiptap/starter-kit": "^3.19.0",
+        "tiptap-markdown": "^0.9.0",
+        "better-opn": "^3.0.2",
+        "boxen": "^8.0.1",
+        "lowlight": "^3.3.0",
+        "marked": "^17.0.1",
+        "ora": "^9.1.0"
+    },
+    "peerDependencies": {
+		"typescript": "^5"
+    },
+    "devDependencies": {
+		"@types/bun": "latest",
+        "@types/node": "^25.2.3",
+		"chalk": "^5.6.2"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yacqu/blankmd"
+    },
+    "keywords": [
+        "markdown",
+        "editor",
+        "single-file",
+        "offline",
+        "tiptap"
+    ]
+}
