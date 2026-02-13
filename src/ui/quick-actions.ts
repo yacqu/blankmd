@@ -44,7 +44,8 @@ const quickActionItems: QuickAction[] = [
 		label: "Select All + Copy",
 		action: async (editor) => {
 			editor.commands.selectAll();
-			const text = editor.state.doc.textContent;
+			// copy as markdown
+			const text = editor.getMarkdown();
 			await navigator.clipboard.writeText(text);
 			editor.commands.focus();
 		},

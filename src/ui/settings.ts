@@ -564,6 +564,22 @@ export function initSettings(editor: Editor, options: SettingsOptions = {}): voi
 			editor.commands.focus(cursorPosition);
 		}, 0);
 	});
+
+	// listen for a copy, and intercept it so we can copy as markdown
+	window.addEventListener("copy", (e) => {
+		const { from, to } = editor.state.selection;
+		if (from === to) return; // No selection
+
+		// Get selection and wrap in doc structure for serialization
+		const slice = editor.state.selection.content();
+		const json = { type: 'doc', content: slice.content.toJSON() };
+
+		// Convert to markdown
+		const markdown = editor.storage.markdown.manager.serialize(json);
+
+		e.clipboardData?.setData("text/plain", markdown);
+		e.preventDefault();
+	});
 }
 
 /**
