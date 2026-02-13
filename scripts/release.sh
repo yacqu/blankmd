@@ -1,43 +1,19 @@
 #!/bin/bash
 # Release script for blankmd
-# Creates a release branch and opens a PR. After the PR is merged,
-# run with --tag to tag the merge commit and trigger the release workflow.
+# Bumps the version, creates a release branch, and opens a PR.
+# When the PR is merged, GitHub Actions auto-tags and creates the release.
 #
 # Usage:
-#   ./scripts/release.sh patch         # 1.0.0 -> 1.0.1, opens PR
-#   ./scripts/release.sh minor         # 1.0.0 -> 1.1.0, opens PR
-#   ./scripts/release.sh major         # 1.0.0 -> 2.0.0, opens PR
-#   ./scripts/release.sh --tag v1.0.1  # Tag latest main and push (after merge)
+#   ./scripts/release.sh patch   # 1.0.0 -> 1.0.1
+#   ./scripts/release.sh minor   # 1.0.0 -> 1.1.0
+#   ./scripts/release.sh major   # 1.0.0 -> 2.0.0
 
 set -e
 
-# --- Tag mode: tag a merged release on main ---
-if [[ "$1" == "--tag" ]]; then
-    TAG="$2"
-    if [[ -z "$TAG" ]]; then
-        echo "Usage: ./scripts/release.sh --tag v1.0.1"
-        exit 1
-    fi
-
-    CURRENT_BRANCH=$(git branch --show-current)
-    if [[ "$CURRENT_BRANCH" != "main" ]]; then
-        echo "Switching to main..."
-        git checkout main
-    fi
-
-    git pull origin main
-    git tag "$TAG"
-    git push origin "$TAG"
-    echo "Done — pushed $TAG. GitHub Actions will build and create the release."
-    exit 0
-fi
-
-# --- PR mode: bump version and open a PR ---
 BUMP="${1:-patch}"
 
 if [[ "$BUMP" != "patch" && "$BUMP" != "minor" && "$BUMP" != "major" ]]; then
     echo "Usage: ./scripts/release.sh [patch|minor|major]"
-    echo "       ./scripts/release.sh --tag v1.0.1"
     exit 1
 fi
 
@@ -86,10 +62,9 @@ git push -u origin "$BRANCH"
 # Open PR
 gh pr create \
     --title "release: $TAG" \
-    --body "Bumps version to $NEW_VERSION. After merging, run: \`bun run release:tag $TAG\`" \
+    --body "Bumps version to $NEW_VERSION. Merging this will auto-tag \`$TAG\` and create a GitHub release." \
     --base main \
     --head "$BRANCH"
 
 echo ""
-echo "PR created. Once CI passes and the PR is merged, run:"
-echo "  bun run release:tag $TAG"
+echo "PR created. Once CI passes and you merge it, the release is automatic."
