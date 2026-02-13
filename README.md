@@ -2,7 +2,7 @@
 
 A single-file Markdown editor. Build once, keep forever.
 
-[![Download](https://img.shields.io/github/v/release/yourusername/blankmd?label=Download&style=flat-square)](https://github.com/yourusername/blankmd/releases)
+[![Download](https://img.shields.io/github/v/release/yacqu/blankmd?label=Download&style=flat-square)](https://github.com/yacqu/blankmd/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
 ## Philosophy
@@ -19,7 +19,7 @@ A single-file Markdown editor. Build once, keep forever.
 
 ### Download
 
-Download the latest `index.html` from the [Releases page](https://github.com/yourusername/blankmd/releases), or try it online at the [GitHub Pages demo](https://yourusername.github.io/blankmd).
+Download the latest `index.html` from the [Releases page](https://github.com/yacqu/blankmd/releases), or try it online at the [GitHub Pages demo](https://yacqu.github.io/blankmd).
 
 ### Use
 
@@ -38,7 +38,7 @@ That's it. No installation, no accounts, no setup.
 ### Setup
 
 ```bash
-git clone https://github.com/yourusername/blankmd.git
+git clone https://github.com/yacqu/blankmd.git
 cd blankmd
 bun install
 ```
