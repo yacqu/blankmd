@@ -1,41 +1,48 @@
 # blankmd
 
-A single-file Markdown editor. Build once, keep forever.
+A markdown editor that lives in a single HTML file.
 
 [![Download](https://img.shields.io/github/v/release/yacqu/blankmd?label=Download&style=flat-square)](https://github.com/yacqu/blankmd/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
-## Philosophy
+## Why
 
-**blankmd** is a markdown editor that compiles to a single, self-contained HTML file. No servers, no dependencies, no internet required—just one file you can save anywhere and use forever.
+I spend a lot of time brainstorming with LLMs, editing prompts, and cleaning up markdown outputs. I wanted a lightweight markdown editor I could just open in a browser tab — no VS Code, no Notion, no signing into anything. Something I could keep open alongside my conversations and just write in.
 
-* 📝 **Single File** — One HTML file contains everything
-* 🔒 **Private** — Your content stays in your browser's localStorage
-* ⚡ **Fast** — No network requests, instant load times
-* 🌐 **Portable** — Works offline, runs anywhere with a browser
-* 🎨 **Customizable** — Built-in settings for fonts, themes, and spacing
+Everything out there was either too heavy, needed an internet connection, or wanted me to make an account. So I built this. It compiles down to a single HTML file. You open it, you write, it saves to localStorage. That's it.
 
-## Quick Start
+It's not perfect and it's not trying to be. It's just useful enough for what I need. If other people end up using it and want things added, I'm happy to make it better.
 
-### Download
+* **Single file** — one HTML file, everything is inlined
+* **Private** — nothing leaves your browser, content stays in localStorage
+* **Fast** — no network requests, loads instantly
+* **Works offline** — runs anywhere you have a browser
+* **Customizable** — fonts, themes, spacing, all built in
 
-Download the latest `index.html` from the [Releases page](https://github.com/yacqu/blankmd/releases), or try it online at the [GitHub Pages demo](https://yacqu.github.io/blankmd).
+## Screenshots
 
-### Use
+![Desktop editor](docs/assets/desktop-example.png)
 
-1. Open `index.html` in any browser
-2. Start writing
-3. Your content auto-saves to browser localStorage
+<p align="center">
+  <img src="docs/assets/chrome-ios.png" alt="iOS Chrome" height="400">
+  <img src="docs/assets/ios-full-page.jpeg" alt="iOS Full Page" height="400">
+</p>
 
-That's it. No installation, no accounts, no setup.
+This whole project was honestly a procrastination from what I should have actually been working on. But here we are.
+
+Bun is actually awesome though. No config bullshit, the build script is like 50 lines — it just calls `Bun.build()`, reads the CSS, and stitches together one HTML file. That's the entire build. The dev server was basically one function call.
+The rest of the codebase came together pretty easily too. The whole UI is built with a small set of helper functions in `components.ts` — stuff like `createElement`, `createButton`, `createStepper`, `createRow`. 
+No framework, no JSX, just plain DOM helpers that compose together. It kept things really consistent without needing to reach for React or anything like that.
+
+## Getting started
+
+Grab the latest `index.html` from the [Releases page](https://github.com/yacqu/blankmd/releases), or try it in the browser at the [GitHub Pages demo](https://yacqu.github.io/blankmd).
+
+Then just open the file and start writing. Your content auto-saves. No installation, no accounts.
 
 ## Development
 
-### Prerequisites
-
-* [Bun](https://bun.sh) runtime
-
-### Setup
+You'll need [Bun](https://bun.sh).
 
 ```bash
 git clone https://github.com/yacqu/blankmd.git
@@ -43,9 +50,7 @@ cd blankmd
 bun install
 ```
 
-### Dev Server
-
-Run the development server with hot reloading:
+Dev server with hot reloading:
 
 ```bash
 bun run dev
@@ -53,21 +58,19 @@ bun run dev
 
 Opens at [http://localhost:1999](http://localhost:1999)
 
-### Build
-
-Generate the single-file `dist/index.html` :
+Build the single-file `dist/index.html`:
 
 ```bash
 bun run build
 ```
 
-Custom output path:
+Or output it somewhere specific:
 
 ```bash
 bun run build --output ~/Desktop/my-editor.html
 ```
 
-## Project Structure
+## Project structure
 
 ```
 blankmd/
@@ -100,9 +103,9 @@ blankmd/
 
 ## Extending
 
-The codebase is designed to be easily extensible:
+If you want to hack on it, the code is pretty straightforward to extend.
 
-### Custom Toolbar Buttons
+### Custom toolbar buttons
 
 ```typescript
 import { createToolbarItem, defaultToolbarItems } from "blankmd";
@@ -120,7 +123,7 @@ initToolbar(editor, {
 });
 ```
 
-### Custom Themes
+### Custom themes
 
 ```typescript
 import type { ThemeTokens } from "blankmd";
@@ -131,12 +134,22 @@ const customTheme: ThemeTokens = {
 };
 ```
 
-## Tech Stack
+## What's next
 
-* [Tiptap](https://tiptap.dev) — Headless rich-text editor
-* [ProseMirror](https://prosemirror.net) — Core editing framework
-* [lowlight](https://github.com/wooorm/lowlight) — Syntax highlighting
-* [Bun](https://bun.sh) — Build tooling
+Things I'd like to add at some point:
+
+- **Theme import/export** — share custom themes
+- **File save/upload** — export and import markdown files
+- **Multiple documents** — organize different files in browser storage
+
+No promises on timelines. If you run into something broken or annoying, open an issue. That's the fastest way to get me to fix things.
+
+## Built with
+
+* [Tiptap](https://tiptap.dev) — headless rich-text editor
+* [ProseMirror](https://prosemirror.net) — core editing framework
+* [lowlight](https://github.com/wooorm/lowlight) — syntax highlighting
+* [Bun](https://bun.sh) — build tooling
 
 ## License
 
