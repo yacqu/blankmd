@@ -135,3 +135,28 @@ export interface SettingsRow {
 	label: string;
 	control: HTMLElement;
 }
+
+// ============================================================================
+// Custom Theme Types
+// ============================================================================
+
+export interface CustomTheme {
+	/** Name of the custom theme */
+	name: string;
+	/** Base theme to extend (light or dark) */
+	base: "light" | "dark";
+	/** Custom token overrides */
+	tokens: Partial<ThemeTokens>;
+}
+
+export interface ThemeColorGroup {
+	id: string;
+	label: string;
+	colors: ThemeColorConfig[];
+}
+
+export interface ThemeColorConfig {
+	key: keyof ThemeTokens;
+	label: string;
+	description?: string;
+}

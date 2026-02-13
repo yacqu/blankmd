@@ -42,7 +42,7 @@ async function loadInitialContent(): Promise<string> {
 	// In standalone mode, only use localStorage
 	if (!isStandalone) {
 		try {
-			const response = await fetch("/api/md-editor/content");
+			const response = await fetch("/api/blankmd/content");
 			if (response.ok) {
 				const data = (await response.json()) as ApiContentResponse;
 				if (data.content && data.filePath) {
@@ -68,7 +68,7 @@ async function saveToFile(editor: Editor): Promise<void> {
 	const markdown = editor.storage.markdown.manager.serialize(editor.getJSON());
 
 	try {
-		const response = await fetch("/api/md-editor/content", {
+		const response = await fetch("/api/blankmd/content", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ content: markdown }),

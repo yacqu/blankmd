@@ -18,6 +18,11 @@ import {
 	createSelect,
 	createToggleGroup,
 } from "./components";
+import {
+	createThemeCustomizer,
+	getCustomThemeTokens,
+	hasCustomTheme,
+} from "./theme-customizer";
 
 /**
  * Check if system prefers dark mode
@@ -135,8 +140,9 @@ function applyTypographySettings(settings: EditorSettings): void {
 /**
  * Apply all settings (theme + typography)
  */
-export function applySettings(settings: EditorSettings): void {
-	const tokens = getThemeTokens(isDarkMode(settings.theme));
+export function applySettings(settings: EditorSettings, customTokens?: ThemeTokens | null): void {
+	// Check for custom theme first
+	const tokens = customTokens ?? getCustomThemeTokens(isDarkMode(settings.theme)) ?? getThemeTokens(isDarkMode(settings.theme));
 	applyThemeTokens(tokens);
 	applyTypographySettings(settings);
 	settingsStorage.save(settings);
@@ -167,7 +173,8 @@ function createPanelHeader(onClose: () => void): HTMLDivElement {
  */
 function createThemeSection(
 	settings: EditorSettings,
-	onUpdate: (settings: EditorSettings) => void
+	onUpdate: (settings: EditorSettings) => void,
+	onCustomize: () => void
 ): HTMLDivElement {
 	const section = createSection();
 
@@ -185,6 +192,15 @@ function createThemeSection(
 	});
 
 	section.appendChild(createRow("Theme", themeToggle));
+
+	// Custom colors button
+	const customizeBtn = createElement("button", {
+		className: "md-settings-action-btn md-customize-btn",
+		textContent: hasCustomTheme() ? "Custom Colors ✓" : "Customize Colors",
+		attributes: { type: "button" },
+	});
+	customizeBtn.addEventListener("click", onCustomize);
+	section.appendChild(customizeBtn);
 
 	return section;
 }
@@ -402,26 +418,72 @@ function createSettingsPanel(
 	settings: EditorSettings,
 	onUpdate: (settings: EditorSettings) => void,
 	editor: Editor
-): HTMLDivElement {
-	const panel = createElement("div", { className: "md-settings-panel hidden" });
+): { settingsPanel: HTMLDivElement; colorPanel: HTMLDivElement; } {
+	const settingsPanel = createElement("div", { className: "md-settings-panel hidden" });
+	const colorPanel = createElement("div", { className: "md-color-panel hidden" });
 
-	const buildContent = () => {
-		panel.innerHTML = "";
+	// Track if color panel needs rebuild
+	let colorPanelBuilt = false;
 
-		panel.appendChild(
-			createPanelHeader(() => panel.classList.add("hidden"))
+	// Check if mobile
+	const isMobileView = () => window.innerWidth <= 768;
+
+	const buildSettingsContent = () => {
+		settingsPanel.innerHTML = "";
+		settingsPanel.appendChild(
+			createPanelHeader(() => {
+				settingsPanel.classList.add("hidden");
+				colorPanel.classList.add("hidden");
+			})
 		);
-		panel.appendChild(createThemeSection(settings, onUpdate));
-		panel.appendChild(createTypographySection(settings, onUpdate));
-		panel.appendChild(createSpacingSection(settings, onUpdate));
-		panel.appendChild(
-			createActionsSection(settings, onUpdate, editor, buildContent)
+		settingsPanel.appendChild(
+			createThemeSection(settings, onUpdate, () => {
+				// Toggle color panel
+				if (colorPanel.classList.contains("hidden")) {
+					if (!colorPanelBuilt) {
+						buildColorPanel();
+						colorPanelBuilt = true;
+					}
+					colorPanel.classList.remove("hidden");
+					// On mobile, hide settings when opening colors
+					if (isMobileView()) {
+						settingsPanel.classList.add("hidden");
+					}
+				} else {
+					colorPanel.classList.add("hidden");
+				}
+			})
+		);
+		settingsPanel.appendChild(createTypographySection(settings, onUpdate));
+		settingsPanel.appendChild(createSpacingSection(settings, onUpdate));
+		settingsPanel.appendChild(
+			createActionsSection(settings, onUpdate, editor, buildSettingsContent)
 		);
 	};
 
-	buildContent();
+	const buildColorPanel = () => {
+		colorPanel.innerHTML = "";
+		const customizer = createThemeCustomizer({
+			currentTheme: settings.theme,
+			onBack: () => {
+				colorPanel.classList.add("hidden");
+				// Show settings panel again on mobile
+				settingsPanel.classList.remove("hidden");
+				// Rebuild settings to update the "Custom Colors ✓" label
+				buildSettingsContent();
+			},
+			onApply: (tokens) => {
+				applySettings(settings, tokens);
+				// Update button label
+				buildSettingsContent();
+			},
+		});
+		colorPanel.appendChild(customizer);
+	};
 
-	return panel;
+	buildSettingsContent();
+
+	return { settingsPanel, colorPanel };
 }
 
 /**
@@ -463,7 +525,7 @@ export function initSettings(editor: Editor, options: SettingsOptions = {}): voi
 
 	// Create UI
 	const btn = createSettingsButton();
-	const panel = createSettingsPanel(
+	const { settingsPanel, colorPanel } = createSettingsPanel(
 		settings,
 		(newSettings) => {
 			settings = newSettings;
@@ -473,18 +535,24 @@ export function initSettings(editor: Editor, options: SettingsOptions = {}): voi
 	);
 
 	document.body.appendChild(btn);
-	document.body.appendChild(panel);
+	document.body.appendChild(settingsPanel);
+	document.body.appendChild(colorPanel);
 
 	// Toggle panel on button click
 	btn.addEventListener("click", (e) => {
 		e.stopPropagation();
-		panel.classList.toggle("hidden");
+		settingsPanel.classList.toggle("hidden");
+		if (settingsPanel.classList.contains("hidden")) {
+			colorPanel.classList.add("hidden");
+		}
 	});
 
-	// Close panel when clicking outside
+	// Close panels when clicking outside
 	document.addEventListener("click", (e) => {
-		if (!panel.contains(e.target as Node) && !btn.contains(e.target as Node)) {
-			panel.classList.add("hidden");
+		const target = e.target as Node;
+		if (!settingsPanel.contains(target) && !colorPanel.contains(target) && !btn.contains(target)) {
+			settingsPanel.classList.add("hidden");
+			colorPanel.classList.add("hidden");
 		}
 	});
 

@@ -260,6 +260,43 @@ body {
     display: none;
 }
 
+/* Color panel - positioned to the left of settings */
+.md-color-panel {
+	position: fixed;
+	bottom: 76px;
+	right: 320px;
+	width: 260px;
+	max-height: 70vh;
+	overflow-y: auto;
+	background: var(--bg-surface);
+	border: 1px solid var(--border-secondary);
+	border-radius: 12px;
+	padding: 16px;
+	z-index: 999;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	font-size: 13px;
+	color: var(--text-body);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+	animation: slideInFromRight 0.15s ease-out;
+}
+
+@keyframes slideInFromRight {
+	from {
+		opacity: 0;
+		transform: translateX(20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.md-color-panel.hidden {
+	display: none;
+}
 .md-settings-panel-header {
     display: flex;
     justify-content: space-between;
@@ -420,6 +457,169 @@ body {
     padding-bottom: 0;
 }
 
+/* Customize button styling */
+.md-customize-btn {
+	background: var(--bg-color) !important;
+	border: 1px solid var(--border-secondary) !important;
+}
+
+/* ============================================
+   Color Picker Components
+   ============================================ */
+
+.md-color-picker {
+	display: flex;
+	align-items: center;
+}
+
+.md-color-preview {
+	display: none;
+}
+
+.md-color-input {
+	width: 40px;
+	height: 32px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.md-color-input::-webkit-color-swatch-wrapper {
+	padding: 2px;
+}
+
+.md-color-input::-webkit-color-swatch {
+	border: 2px solid var(--border-secondary);
+	border-radius: 6px;
+}
+
+.md-color-input::-moz-color-swatch {
+	border: 2px solid var(--border-secondary);
+	border-radius: 6px;
+}
+
+.md-color-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border-secondary);
+}
+
+.md-color-row:last-child {
+	border-bottom: none;
+}
+
+.md-color-row label {
+	font-size: 12px;
+	color: var(--text-body);
+}
+
+/* Color groups */
+.md-color-groups {
+	max-height: 300px;
+	overflow-y: auto;
+	margin: 8px 0;
+	padding-right: 4px;
+}
+
+.md-color-group {
+	margin-bottom: 8px;
+	border: 1px solid var(--border-secondary);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.md-color-group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px;
+	background: var(--bg-surface);
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--text-body);
+	transition: background 0.15s;
+}
+
+.md-color-group-header:hover {
+	background: var(--border-secondary);
+}
+
+.md-color-group-chevron {
+	display: flex;
+	align-items: center;
+	color: var(--text-muted);
+	transition: transform 0.2s;
+}
+
+.md-color-group-chevron.collapsed {
+	transform: rotate(-90deg);
+}
+
+.md-color-group-content {
+	padding: 8px 12px;
+	background: var(--bg-color);
+	transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+	max-height: 500px;
+	overflow: hidden;
+}
+
+.md-color-group-content.collapsed {
+	max-height: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+/* ============================================
+   Theme Customizer
+   ============================================ */
+
+.md-theme-customizer {
+	padding: 0;
+}
+
+.md-theme-customizer .md-settings-panel-header {
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 12px;
+}
+
+.md-theme-customizer .md-settings-panel-header h3 {
+	margin: 0;
+}
+
+.md-theme-customizer-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--border-secondary);
+}
+
+.md-settings-action-btn.md-primary {
+	background: var(--accent);
+	color: white;
+}
+
+.md-settings-action-btn.md-primary:hover {
+	opacity: 0.9;
+	background: var(--accent);
+}
+
+.md-settings-action-btn.md-danger {
+	color: #e53935;
+}
+
+.md-settings-action-btn.md-danger:hover {
+	background: rgba(229, 57, 53, 0.1);
+	color: #e53935;
+}
 /* ============================================
    Syntax Highlighting (lowlight/highlightjs)
    ============================================ */
@@ -648,6 +848,16 @@ body {
         max-height: 60vh;
         overflow-y: auto;
     }
+.md-color-panel {
+	position: fixed;
+	bottom: 64px;
+	top: auto;
+	right: 16px;
+	left: 16px;
+	width: auto;
+	max-height: 60vh;
+	z-index: 1001;
+}
 }
 
 /* ============================================

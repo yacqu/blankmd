@@ -19,4 +19,14 @@ export {
 	createSection,
 	createSelect,
 	createToggleGroup,
+	createColorPicker,
+	createColorRow,
+	createColorGroup,
 } from "./components";
+
+export {
+	createThemeCustomizer,
+	hasCustomTheme,
+	getCustomThemeTokens,
+	getCustomThemeBase,
+} from "./theme-customizer";
