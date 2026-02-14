@@ -9,6 +9,7 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 import chalk from "chalk";
+import { renderHtml } from "./html-template";
 
 const PORT = 1999;
 const ROOT_DIR = path.join(import.meta.dirname, "..");
@@ -42,20 +43,12 @@ async function buildHtml(): Promise<string> {
 	const js = await jsOutput.text();
 	const css = await Bun.file(CSS_PATH).text();
 
-	return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>blankmd (dev)</title>
-  <style>${css}</style>
-</head>
-<body>
-  <div id="editor"></div>
-  <script>${js}</script>
-
-</body>
-</html>`;
+	return renderHtml({
+		title: "blankmd (dev)",
+		css,
+		js,
+		favicon: true,
+	});
 }
 
 

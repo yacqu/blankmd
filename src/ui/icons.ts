@@ -146,6 +146,61 @@ export const icons = {
 			`<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>`,
 			opts.className
 		),
+
+	// Filesystem / sidebar
+	file: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>`,
+			opts.className
+		),
+
+	folder: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>`,
+			opts.className
+		),
+
+	chevronDown: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<polyline points="6 9 12 15 18 9"></polyline>`,
+			opts.className
+		),
+
+	plus: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>`,
+			opts.className
+		),
+
+	folderPlus: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line>`,
+			opts.className
+		),
+
+	download: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>`,
+			opts.className
+		),
+
+	upload: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>`,
+			opts.className
+		),
+
+	edit: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 16, opts.strokeWidth ?? 2,
+			`<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>`,
+			opts.className
+		),
+
+	sidebar: (opts: IconOptions = {}) =>
+		createSvg(opts.size ?? 18, opts.strokeWidth ?? 2,
+			`<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line>`,
+			opts.className
+		),
 };
 
 /**

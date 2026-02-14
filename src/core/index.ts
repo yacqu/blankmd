@@ -3,7 +3,15 @@
  * @module core
  */
 
-export { createEditor, getFileState, reparseAsMarkdown } from "./editor";
+export {
+	createEditor,
+	getFileState,
+	reparseAsMarkdown,
+	setContentSaveHandler,
+	forceSave,
+	getEditorContent,
+	setEditorContent,
+} from "./editor";
 export type { CreateEditorOptions } from "./editor";
 
 export { PasteMarkdown, looksLikeMarkdown } from "./extensions";

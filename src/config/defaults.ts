@@ -47,6 +47,7 @@ export const STORAGE_KEYS = {
 	settings: "blankmd:settings",
 	toolbar: "blankmd:toolbar-visible",
 	customTheme: "blankmd:custom-theme",
+	filesystem: "blankmd:filesystem",
 } as const;
 
 /**

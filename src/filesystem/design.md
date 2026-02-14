@@ -554,3 +554,77 @@ Implement in this order so you can test incrementally:
 * [ ] Snapshot import validates file before replacing
 * [ ] Build passes (`bun run build`)
 * [ ] Tested on mobile
+
+
+
+
+
+---
+Review:
+
+The "Save" Race Condition (Critical)
+There is one major logic gap in the "File Switching" section that will cause data loss if not addressed.
+
+The Scenario:
+
+User types "Hello" in File A.
+
+The debounce timer starts (500ms).
+
+User immediately clicks File B in the sidebar before 500ms passes.
+
+Issue: The editor content is swapped to File B. The debounce timer fires. It calls editor.getJSON(). It effectively saves File B's content (or the mixed state) into File A's storage slot, or overwrites File A's pending changes.
+
+The Fix:
+You need a flush mechanism in editor.ts. Before switching files, the filesystem module must force the editor to save now.
+
+Recommended Change in editor.ts:
+
+TypeScript
+// Add a flush parameter or a separate method
+export function forceSave(editor: Editor) {
+    if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        saveTimeout = null;
+    }
+    // Execute the save logic immediately
+    const content = JSON.stringify(editor.getJSON());
+    if (onContentSave) onContentSave(content);
+}
+Recommended Change in filesystem/index.ts (switchFile):
+
+TypeScript
+export function switchFile(newId: string) {
+    const activeId = fsStore.getActiveFileId();
+    if (activeId === newId) return;
+
+    // 1. Force save current file BEFORE switching context
+    forceSave(editor); 
+    
+    // 2. Now it's safe to switch
+    fsStore.setActiveFileId(newId);
+    const newContent = fsStore.getContent(newId);
+    setEditorContent(editor, newContent);
+}
+
+Strict Mode: Prevent image pasting or warn users that images consume storage.
+
+Chunking (Overkill for V1): If blankmd:filesystem gets too big, localStorage will throw a generic "QuotaExceededError". You might need a try/catch block around the save to alert the user: "Storage full. Please export backup and delete some files."
+
+
+The Resizer:
+Implementing a custom split-pane resizer often feels janky if you only listen to events on the resizer element itself.
+
+Tip: When mousedown happens on the resizer, attach the mousemove and mouseup listeners to document.body (or window), not the resizer div. This prevents the cursor from "slipping off" the handle if the user drags too fast.
+
+Tip: Add user-select: none and pointer-events: none to the #editor and .md-sidebar while dragging. This prevents the mouse from accidentally selecting text in the editor while you are just trying to resize the window.
+
+Mobile Overlay:
+Your CSS approach (position: fixed + z-index) is correct.
+
+Add: You will likely need a "backdrop" div (semi-transparent black overlay) behind the sidebar on mobile. Clicking that backdrop should close the sidebar. This is standard mobile drawer behavior.
+
+Snapshot vs. Export
+Your distinction between "Export File" (Markdown) and "Snapshot" (JSON) is perfect.
+
+Security Note: When importing a snapshot, you are taking JSON.parse(text) and dumping it into your application state. While Tiptap sanitizes HTML on render, ensure that your migration.ts or store.ts validates that the structure matches FileSystemStore before applying it, to prevent the app from crashing on a malformed JSON file.
