@@ -70,6 +70,63 @@ Then on GitHub:
 
 Nothing else to do. Merge the PR and everything happens automatically.
 
+## Making changes (features, bugs, etc.)
+
+All changes go through branches and PRs. Never commit directly to `main`.
+
+### Branch naming
+
+Use a prefix that describes what the change is:
+
+| Prefix | When to use | Example |
+|---|---|---|
+| `feat/` | New feature or enhancement | `feat/file-upload` |
+| `fix/` | Bug fix | `fix/toolbar-not-hiding` |
+| `chore/` | Cleanup, config, docs, CI changes | `chore/update-deps` |
+| `release/` | Version bumps (created by release script) | `release/v1.0.3` |
+
+### Workflow
+
+```bash
+# 1. Make sure you're on main and up to date
+git checkout main
+git pull origin main
+
+# 2. Create your branch
+git checkout -b feat/my-feature
+
+# 3. Make your changes, commit as you go
+git add -A
+git commit -m "feat: add thing"
+
+# 4. Push and open a PR
+git push -u origin feat/my-feature
+gh pr create --title "feat: add thing" --body "Description of what this does"
+
+# 5. Wait for CI to pass, then merge on GitHub
+
+# 6. Come back to main
+git checkout main
+git pull origin main
+```
+
+### What happens when you merge
+
+1. CI runs on the PR (`build.yml`) — if the build fails, you can't merge
+2. Once merged, the deploy workflow runs and updates GitHub Pages
+3. If it was a `release/v*` branch, the release workflow also auto-tags and creates a GitHub Release
+
+### Commit messages
+
+Keep them short and use a prefix:
+
+- `feat: add toolbar button for tables`
+- `fix: settings panel not closing on mobile`
+- `chore: update tiptap dependencies`
+- `docs: add contributing guide`
+
+No strict enforcement, just keep it readable.
+
 ## GitHub Pages deployment
 
 The deploy workflow runs on every push to `main` , not just releases. So any merged PR (features, fixes, whatever) will update the live demo at https://yacqu.github.io/blankmd.
