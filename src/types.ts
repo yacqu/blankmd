@@ -44,6 +44,8 @@ export interface ThemeTokens {
 // Settings Types
 // ============================================================================
 
+export type SidebarTogglePosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
 export interface EditorSettings {
 	theme: ThemeMode;
 	fontFamily: string;
@@ -54,6 +56,7 @@ export interface EditorSettings {
 	headingSpacing: number;
 	paddingHorizontal: number;
 	paddingTop: number;
+	sidebarTogglePosition: SidebarTogglePosition;
 }
 
 export interface FontOption {

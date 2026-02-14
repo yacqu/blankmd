@@ -7,6 +7,7 @@ import type { Editor } from "@tiptap/core";
 import type { TreeNode } from "../types";
 import { icons } from "../ui/icons";
 import { createElement, createButton } from "../ui/components";
+import { settingsStorage } from "../core/storage";
 import { fsStore } from "./store";
 import {
 	getChildren,
@@ -493,8 +494,11 @@ function initResizer(): void {
 // ── Toggle ───────────────────────────────────────────────────────────────────
 
 function createToggleButton(): void {
+	const settings = settingsStorage.load();
+	const position = settings.sidebarTogglePosition ?? "top-left";
+
 	toggleBtn = createButton({
-		className: "md-sidebar-toggle",
+		className: `md-sidebar-toggle pos-${position}`,
 		innerHTML: icons.sidebar({ size: 18 }),
 		title: "Toggle Sidebar",
 		onClick: () => openSidebar(),

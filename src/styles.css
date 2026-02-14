@@ -1250,8 +1250,6 @@ body.resizing .md-resizer {
 
 .md-sidebar-toggle {
 	position: fixed;
-	top: 12px;
-	left: 12px;
 	z-index: 50;
 	background: var(--bg-surface, #f8f8f8);
 	border: 1px solid var(--border-secondary, #e0e0e0);
@@ -1266,6 +1264,26 @@ body.resizing .md-resizer {
 	transition: opacity 0.2s;
 }
 
+/* Toggle positions */
+.md-sidebar-toggle.pos-top-left {
+	top: 12px;
+	left: 12px;
+}
+
+.md-sidebar-toggle.pos-top-right {
+	top: 12px;
+	right: 12px;
+}
+
+.md-sidebar-toggle.pos-bottom-left {
+	bottom: 12px;
+	left: 12px;
+}
+
+.md-sidebar-toggle.pos-bottom-right {
+	bottom: 12px;
+	right: 12px;
+}
 .md-sidebar-toggle:hover {
 	color: var(--text-primary, #333);
 	background: var(--bg-editor, #fff);

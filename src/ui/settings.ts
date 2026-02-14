@@ -4,7 +4,7 @@
  */
 
 import type { Editor } from "@tiptap/core";
-import type { EditorSettings, ThemeMode, ThemeTokens } from "../types";
+import type { EditorSettings, ThemeMode, ThemeTokens, SidebarTogglePosition } from "../types";
 import { settingsStorage } from "../core/storage";
 import { reparseAsMarkdown } from "../core/editor";
 import { getThemeTokens, FONTS, getDefaultSettings, isMobile } from "../config";
@@ -372,6 +372,51 @@ function createSpacingSection(
 }
 
 /**
+ * Create sidebar section
+ */
+function createSidebarSection(
+	settings: EditorSettings,
+	onUpdate: (settings: EditorSettings) => void
+): HTMLDivElement {
+	const section = createSection();
+
+	const positionOptions: Array<{ label: string; value: SidebarTogglePosition; }> = [
+		{ label: "Top Left", value: "top-left" },
+		{ label: "Top Right", value: "top-right" },
+		{ label: "Bottom Left", value: "bottom-left" },
+		{ label: "Bottom Right", value: "bottom-right" },
+	];
+
+	section.appendChild(
+		createRow(
+			"Toggle Pos.",
+			createSelect({
+				values: positionOptions,
+				selected: settings.sidebarTogglePosition ?? "top-left",
+				onChange: (pos) => {
+					settings.sidebarTogglePosition = pos;
+					onUpdate(settings);
+					// Apply position immediately to the toggle button
+					applySidebarTogglePosition(pos);
+				},
+			})
+		)
+	);
+
+	return section;
+}
+
+/**
+ * Apply sidebar toggle position class to the toggle button
+ */
+export function applySidebarTogglePosition(position: SidebarTogglePosition): void {
+	const toggle = document.querySelector(".md-sidebar-toggle");
+	if (!toggle) return;
+	toggle.classList.remove("pos-top-left", "pos-top-right", "pos-bottom-left", "pos-bottom-right");
+	toggle.classList.add(`pos-${position}`);
+}
+
+/**
  * Create actions section
  */
 function createActionsSection(
@@ -456,6 +501,7 @@ function createSettingsPanel(
 		);
 		settingsPanel.appendChild(createTypographySection(settings, onUpdate));
 		settingsPanel.appendChild(createSpacingSection(settings, onUpdate));
+		settingsPanel.appendChild(createSidebarSection(settings, onUpdate));
 		settingsPanel.appendChild(
 			createActionsSection(settings, onUpdate, editor, buildSettingsContent)
 		);
