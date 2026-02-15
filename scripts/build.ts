@@ -9,6 +9,7 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 import chalk from "chalk";
+import { renderHtml } from "./html-template";
 
 const ROOT_DIR = path.join(import.meta.dirname, "..");
 const SRC_DIR = path.join(ROOT_DIR, "src");
@@ -87,21 +88,13 @@ async function build(args: string[]) {
 	const css = await Bun.file(CSS_PATH).text();
 
 	// 3. Assemble single HTML file with MIT license header
-	const html = `<!DOCTYPE html>
-${MIT_LICENSE}
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>blankmd</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
-  <style>${css}</style>
-</head>
-<body>
-  <div id="editor"></div>
-  <script>${js}</script>
-</body>
-</html>`;
+	const html = renderHtml({
+		title: "blankmd",
+		css,
+		js,
+		preamble: MIT_LICENSE,
+		favicon: true,
+	});
 
 	await Bun.write(outputPath, html);
 

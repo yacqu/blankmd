@@ -4,6 +4,7 @@
  */
 
 import type { EditorSettings, FontOption } from "../types";
+import type { SidebarTogglePosition } from "../types";
 
 /**
  * Available font options for the editor
@@ -36,6 +37,7 @@ export function getDefaultSettings(): EditorSettings {
 		headingSpacing: 1.5,
 		paddingHorizontal: mobile ? 1 : 2,
 		paddingTop: mobile ? 1 : 2,
+		sidebarTogglePosition: "top-left" as SidebarTogglePosition,
 	};
 }
 
@@ -47,6 +49,7 @@ export const STORAGE_KEYS = {
 	settings: "blankmd:settings",
 	toolbar: "blankmd:toolbar-visible",
 	customTheme: "blankmd:custom-theme",
+	filesystem: "blankmd:filesystem",
 } as const;
 
 /**

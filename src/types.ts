@@ -44,6 +44,8 @@ export interface ThemeTokens {
 // Settings Types
 // ============================================================================
 
+export type SidebarTogglePosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
 export interface EditorSettings {
 	theme: ThemeMode;
 	fontFamily: string;
@@ -54,6 +56,7 @@ export interface EditorSettings {
 	headingSpacing: number;
 	paddingHorizontal: number;
 	paddingTop: number;
+	sidebarTogglePosition: SidebarTogglePosition;
 }
 
 export interface FontOption {
@@ -159,4 +162,36 @@ export interface ThemeColorConfig {
 	key: keyof ThemeTokens;
 	label: string;
 	description?: string;
+}
+
+// ============================================================================
+// Filesystem Types
+// ============================================================================
+
+export interface FileNode {
+	id: string;
+	type: "file";
+	name: string;
+	parentId: string | null;
+	createdAt: number;
+	updatedAt: number;
+}
+
+export interface FolderNode {
+	id: string;
+	type: "folder";
+	name: string;
+	parentId: string | null;
+	collapsed: boolean;
+	createdAt: number;
+}
+
+export type TreeNode = FileNode | FolderNode;
+
+export interface FileSystemStore {
+	nodes: Record<string, TreeNode>;
+	content: Record<string, string>;
+	activeFileId: string | null;
+	sidebarWidth: number;
+	sidebarOpen: boolean;
 }

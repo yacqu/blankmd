@@ -6,7 +6,7 @@
 export { initToolbar, defaultToolbarItems, createToolbarItem } from "./toolbar";
 export type { ToolbarOptions } from "./toolbar";
 
-export { initSettings, applySettings, isDarkMode, prefersDarkMode } from "./settings";
+export { initSettings, applySettings, isDarkMode, prefersDarkMode, applySidebarTogglePosition } from "./settings";
 export type { SettingsOptions } from "./settings";
 
 export { initQuickActions } from "./quick-actions";

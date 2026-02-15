@@ -8,6 +8,7 @@
 import "./styles.css";
 import { createEditor } from "./core";
 import { initToolbar, initSettings, initQuickActions } from "./ui";
+import { initFilesystem } from "./filesystem";
 
 /**
  * Initialize the blankmd editor
@@ -26,6 +27,9 @@ async function init(): Promise<void> {
 			initToolbar(editor);
 			initSettings(editor);
 			initQuickActions(editor);
+
+			// Initialize virtual filesystem (sidebar, file switching, migration)
+			initFilesystem(editor);
 		},
 	});
 }

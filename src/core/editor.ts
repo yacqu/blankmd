@@ -98,6 +98,16 @@ function updateDocumentTitle(): void {
  */
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
+/** Optional save callback set by the filesystem module */
+let onContentSave: ((content: string) => void) | null = null;
+
+/**
+ * Set a custom content save handler (used by filesystem module)
+ */
+export function setContentSaveHandler(handler: (content: string) => void): void {
+	onContentSave = handler;
+}
+
 function handleContentUpdate(editor: Editor): void {
 	if (saveTimeout) clearTimeout(saveTimeout);
 
@@ -107,10 +117,54 @@ function handleContentUpdate(editor: Editor): void {
 		return;
 	}
 
-	// Auto-save to localStorage with debounce
+	// Auto-save with debounce
 	saveTimeout = setTimeout(() => {
-		contentStorage.save(editor.getJSON());
+		const content = JSON.stringify(editor.getJSON());
+		if (onContentSave) {
+			onContentSave(content);
+		} else {
+			contentStorage.save(editor.getJSON());
+		}
 	}, 500);
+}
+
+/**
+ * Force an immediate save, flushing any pending debounce.
+ * Must be called before switching files to prevent data loss.
+ */
+export function forceSave(editor: Editor): void {
+	if (saveTimeout) {
+		clearTimeout(saveTimeout);
+		saveTimeout = null;
+	}
+	const content = JSON.stringify(editor.getJSON());
+	if (onContentSave) {
+		onContentSave(content);
+	}
+}
+
+/**
+ * Get current editor content as Tiptap JSON string
+ */
+export function getEditorContent(editor: Editor): string {
+	return JSON.stringify(editor.getJSON());
+}
+
+/**
+ * Replace editor content (used when switching files)
+ */
+export function setEditorContent(editor: Editor, content: string): void {
+	if (!content) {
+		editor.commands.clearContent();
+		return;
+	}
+	try {
+		editor.commands.setContent(JSON.parse(content));
+	} catch {
+		// If it's not valid JSON, try parsing as markdown
+		const parsed = editor.storage.markdown.manager.parse(content);
+		editor.commands.setContent(parsed);
+	}
 }
 
 /**

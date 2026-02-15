@@ -20,14 +20,20 @@ body {
 	-webkit-touch-action: manipulation;
 }
 
-/* Editor container - full height, clickable */
+/*
+ * Editor container — base styles.
+ * NOTE: Do NOT add align-self, explicit vw widths, or 100vh min-height here.
+ * The editor sits inside #app (a flex row with the sidebar), so it must
+ * use width:100% / min-height:100% to fill its flex slot correctly.
+ * Flex-specific overrides live in the "Editor adjusts" rule below
+ * (near the sidebar / filesystem section).
+ */
 #editor {
 	/* max-width: var(--content-width); */
 	margin: 0 auto;
-	width: 95vw;
+	width: 100%;
 	padding-bottom: 5vh;
-	align-self: center;
-	min-height: 100vh;
+	min-height: 100%;
 	cursor: text;
 }
 
@@ -37,7 +43,7 @@ body {
 	outline: none;
 	font-family: var(--font-family), serif;
 	padding-inline: var(--editor-padding-x);
-	padding-top: var(--editor-padding-y);
+	padding-top: calc(var(--editor-padding-y));
 	font-size: var(--font-size);
 	line-height: var(--line-height-body);
 	min-height: calc(100vh - var(--editor-padding-y) * 2);
@@ -1059,5 +1065,385 @@ body {
 @media (max-width: 768px) {
 	.tiptap {
 		font-size: max(var(--font-size), 8px);
+	}
+}
+/* ============================================
+   Sidebar & Virtual Filesystem
+   ============================================ */
+
+/* App wrapper — flex row */
+#app {
+	display: flex;
+	height: 100vh;
+	overflow: hidden;
+}
+
+/* ── Sidebar ────────────────────────────────── */
+
+.md-sidebar {
+	width: 0;
+	min-width: 0;
+	overflow: hidden;
+	transition: width 0.2s ease;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg-surface, #f8f8f8);
+	border-right: 1px solid var(--border-secondary, #e0e0e0);
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	font-size: 13px;
+	user-select: none;
+}
+
+.md-sidebar.open {
+	width: var(--sidebar-width, 240px);
+	min-width: 180px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* ── Sidebar header ─────────────────────────── */
+
+.md-sidebar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	border-bottom: 1px solid var(--border-secondary, #e0e0e0);
+	flex-shrink: 0;
+}
+
+.md-sidebar-header-title {
+	font-weight: 600;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--text-secondary, #666);
+}
+
+.md-sidebar-header-actions {
+	display: flex;
+	gap: 2px;
+}
+
+.md-sidebar-header-actions button {
+	background: none;
+	border: none;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--text-secondary, #666);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.md-sidebar-header-actions button:hover {
+	background: var(--bg-editor, rgba(0, 0, 0, 0.06));
+	color: var(--text-primary, #333);
+}
+
+/* ── Tree view ──────────────────────────────── */
+
+.md-tree {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px 0;
+}
+
+.md-tree-item {
+	display: flex;
+	align-items: center;
+	padding: 4px 8px;
+	padding-left: calc(8px + var(--depth, 0) * 16px);
+	cursor: pointer;
+	gap: 4px;
+	min-height: 28px;
+	border-radius: 4px;
+	margin: 0 4px;
+	color: var(--text-body, #333);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.md-tree-item:hover {
+	background: var(--bg-editor, rgba(0, 0, 0, 0.04));
+}
+
+.md-tree-item.active {
+	background: var(--accent, #0066cc);
+	color: #fff;
+}
+
+.md-tree-item.active .md-tree-icon {
+	color: #fff;
+}
+
+.md-tree-item .md-tree-icon {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	color: var(--text-muted, #999);
+}
+
+.md-tree-item .md-tree-chevron {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	width: 16px;
+	transition: transform 0.15s ease;
+}
+
+.md-tree-item .md-tree-chevron.collapsed {
+	transform: rotate(-90deg);
+}
+
+.md-tree-item .md-tree-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex: 1;
+	min-width: 0;
+}
+
+/* Inline rename input */
+.md-tree-rename-input {
+	flex: 1;
+	min-width: 0;
+	background: var(--bg-editor, #fff);
+	border: 1px solid var(--accent, #0066cc);
+	border-radius: 3px;
+	padding: 1px 4px;
+	font-size: 13px;
+	font-family: inherit;
+	color: var(--text-body, #333);
+	outline: none;
+}
+
+/* ── Resizer ────────────────────────────────── */
+
+.md-resizer {
+	width: 4px;
+	cursor: col-resize;
+	background: transparent;
+	flex-shrink: 0;
+	display: none;
+	position: relative;
+	z-index: 10;
+}
+
+.md-resizer:hover,
+.md-resizer.dragging {
+	background: var(--accent, #0066cc);
+	opacity: 0.4;
+}
+
+.md-sidebar.open~.md-resizer {
+	display: block;
+}
+
+/* Prevent text selection while resizing */
+body.resizing * {
+	user-select: none !important;
+	pointer-events: none !important;
+}
+
+body.resizing .md-resizer {
+	pointer-events: auto !important;
+}
+
+/* ── Sidebar toggle button ──────────────────── */
+
+.md-sidebar-toggle {
+	position: fixed;
+	z-index: 50;
+	background: var(--bg-surface, #f8f8f8);
+	border: 1px solid var(--border-secondary, #e0e0e0);
+	border-radius: 6px;
+	padding: 6px;
+	cursor: pointer;
+	color: var(--text-secondary, #666);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	transition: opacity 0.2s;
+}
+
+/* Toggle positions */
+.md-sidebar-toggle.pos-top-left {
+	top: 12px;
+	left: 12px;
+}
+
+.md-sidebar-toggle.pos-top-right {
+	top: 12px;
+	right: 12px;
+}
+
+.md-sidebar-toggle.pos-bottom-left {
+	bottom: 12px;
+	left: 12px;
+}
+
+.md-sidebar-toggle.pos-bottom-right {
+	bottom: 12px;
+	right: 12px;
+}
+.md-sidebar-toggle:hover {
+	color: var(--text-primary, #333);
+	background: var(--bg-editor, #fff);
+}
+
+/* Hide toggle when sidebar is open */
+.md-sidebar-toggle.hidden {
+	display: none;
+}
+
+/* ── Context menu ───────────────────────────── */
+
+.md-context-menu {
+	position: fixed;
+	z-index: 200;
+	background: var(--bg-surface, #fff);
+	border: 1px solid var(--border-secondary, #e0e0e0);
+	border-radius: 8px;
+	padding: 4px;
+	min-width: 160px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	font-size: 13px;
+}
+
+.md-context-menu-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	cursor: pointer;
+	border-radius: 4px;
+	border: none;
+	background: none;
+	width: 100%;
+	text-align: left;
+	color: var(--text-body, #333);
+	font-size: 13px;
+	font-family: inherit;
+}
+
+.md-context-menu-item:hover {
+	background: var(--bg-editor, rgba(0, 0, 0, 0.04));
+}
+
+.md-context-menu-item.danger {
+	color: #dc3545;
+}
+
+.md-context-menu-item.danger:hover {
+	background: rgba(220, 53, 69, 0.08);
+}
+
+.md-context-menu-separator {
+	height: 1px;
+	background: var(--border-secondary, #e0e0e0);
+	margin: 4px 0;
+}
+
+/* ── Sidebar footer (backup/restore) ────────── */
+
+.md-sidebar-footer {
+	border-top: 1px solid var(--border-secondary, #e0e0e0);
+	padding: 8px;
+	flex-shrink: 0;
+	display: flex;
+	gap: 4px;
+}
+
+.md-sidebar-footer button {
+	flex: 1;
+	background: none;
+	border: 1px solid var(--border-secondary, #e0e0e0);
+	border-radius: 4px;
+	padding: 5px 8px;
+	font-size: 11px;
+	cursor: pointer;
+	color: var(--text-secondary, #666);
+	font-family: inherit;
+}
+
+.md-sidebar-footer button:hover {
+	background: var(--bg-editor, rgba(0, 0, 0, 0.04));
+	color: var(--text-primary, #333);
+}
+
+/*
+ * ── Editor adjusts ──────────────────────────
+ * Flex-child overrides so the editor fills remaining space beside the sidebar.
+ * overflow-y: auto enables scrolling within the editor pane only (not the page).
+ * Do NOT duplicate width / min-height / align-self here — set those in the
+ * base #editor rule above.
+ */
+#editor {
+	flex: 1;
+	min-width: 0;
+	overflow-y: auto;
+}
+
+/* ── Scrollbar theming ──────────────────────── */
+
+/* Thin, unobtrusive scrollbar that blends with the app background */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-secondary, #e0e0e0) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: var(--border-secondary, #e0e0e0);
+	border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: var(--text-secondary, #888);
+}
+/* ── Mobile sidebar overlay ─────────────────── */
+
+.md-sidebar-backdrop {
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.md-sidebar.open {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 85vw !important;
+		min-width: 0 !important;
+		height: 100vh;
+		z-index: 100;
+		box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+	}
+
+	.md-resizer {
+		display: none !important;
+	}
+
+	.md-sidebar-backdrop.visible {
+		display: block;
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 99;
+	}
+
+	.md-sidebar-toggle {
+		display: flex !important;
 	}
 }
