@@ -139,6 +139,17 @@ export function toggleFolder(id: string): void {
 	fsStore.setNode(node);
 }
 
+/** Collapse all folders */
+export function collapseAllFolders(): void {
+	const nodes = fsStore.getAllNodes();
+	for (const node of Object.values(nodes)) {
+		if (node.type === "folder" && !node.collapsed) {
+			node.collapsed = true;
+			fsStore.setNode(node);
+		}
+	}
+}
+
 // ── Delete ───────────────────────────────────────────────────────────────────
 
 /** Delete a node and all descendants (for folders). Returns IDs of removed nodes. */

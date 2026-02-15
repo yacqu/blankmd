@@ -16,6 +16,7 @@ import {
 	renameNode,
 	deleteNode,
 	toggleFolder,
+	collapseAllFolders,
 } from "./tree";
 import { exportSnapshot, importSnapshot } from "./snapshot";
 import { isMobile } from "../config";
@@ -115,13 +116,22 @@ function buildSidebarContent(): void {
 		},
 	});
 
+	const collapseBtn = createButton({
+		innerHTML: icons.collapseAll({ size: 16 }),
+		title: "Collapse All Folders",
+		onClick: () => {
+			collapseAllFolders();
+			renderTree();
+		},
+	});
+
 	const closeBtn = createButton({
 		innerHTML: icons.close({ size: 16 }),
 		title: "Close Sidebar",
 		onClick: () => closeSidebar(),
 	});
 
-	actions.append(newFileBtn, newFolderBtn, closeBtn);
+	actions.append(newFileBtn, newFolderBtn, collapseBtn, closeBtn);
 	header.append(title, actions);
 
 	// Tree container

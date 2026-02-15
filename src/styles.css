@@ -20,14 +20,20 @@ body {
 	-webkit-touch-action: manipulation;
 }
 
-/* Editor container - full height, clickable */
+/*
+ * Editor container — base styles.
+ * NOTE: Do NOT add align-self, explicit vw widths, or 100vh min-height here.
+ * The editor sits inside #app (a flex row with the sidebar), so it must
+ * use width:100% / min-height:100% to fill its flex slot correctly.
+ * Flex-specific overrides live in the "Editor adjusts" rule below
+ * (near the sidebar / filesystem section).
+ */
 #editor {
 	/* max-width: var(--content-width); */
 	margin: 0 auto;
-	width: 95vw;
+	width: 100%;
 	padding-bottom: 5vh;
-	align-self: center;
-	min-height: 100vh;
+	min-height: 100%;
 	cursor: text;
 }
 
@@ -37,7 +43,7 @@ body {
 	outline: none;
 	font-family: var(--font-family), serif;
 	padding-inline: var(--editor-padding-x);
-	padding-top: var(--editor-padding-y);
+	padding-top: calc(var(--editor-padding-y));
 	font-size: var(--font-size);
 	line-height: var(--line-height-body);
 	min-height: calc(100vh - var(--editor-padding-y) * 2);
@@ -1369,14 +1375,44 @@ body.resizing .md-resizer {
 	color: var(--text-primary, #333);
 }
 
-/* ── Editor adjusts ─────────────────────────── */
-
+/*
+ * ── Editor adjusts ──────────────────────────
+ * Flex-child overrides so the editor fills remaining space beside the sidebar.
+ * overflow-y: auto enables scrolling within the editor pane only (not the page).
+ * Do NOT duplicate width / min-height / align-self here — set those in the
+ * base #editor rule above.
+ */
 #editor {
 	flex: 1;
 	min-width: 0;
 	overflow-y: auto;
 }
 
+/* ── Scrollbar theming ──────────────────────── */
+
+/* Thin, unobtrusive scrollbar that blends with the app background */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-secondary, #e0e0e0) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: var(--border-secondary, #e0e0e0);
+	border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: var(--text-secondary, #888);
+}
 /* ── Mobile sidebar overlay ─────────────────── */
 
 .md-sidebar-backdrop {
